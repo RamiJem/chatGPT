@@ -1,7 +1,7 @@
 import torch
 import torch.nn as nn
 from torch.nn import functional as F
-
+import os
 
 batch_size = 32
 block_size = 8
@@ -15,8 +15,7 @@ n_embd = 32
 
 torch.manual_seed(1337)
 
-
-with open("input.txt", "r", encoding="utf-8") as f:
+with open("app/input.txt", "r", encoding="utf-8") as f:
     text = f.read()
 
 chars = sorted(list(set(text)))
@@ -43,12 +42,12 @@ val_data = data[n:]
 
 block_size = 8
 
-x = train_data[:block_size]
-y = train_data[1:block_size+1]
+# x = train_data[:block_size]
+# y = train_data[1:block_size+1]
 
-for t in range(block_size):
-    context = x[:t+1]
-    target = y[t]
+# for t in range(block_size):
+#     context = x[:t+1]
+#     target = y[t]
 
 
 
@@ -224,20 +223,25 @@ PATH = "state_dict_model.pt"
 #torch.save(m.state_dict(), PATH)
 
 
-for iter in range(max_iters):
-    if iter % eval_interval == 0:
-        losses = estimate_loss()
-        
-        
-        #print(f"step {iter}: train loss {losses['train']:.4f}, val loss {losses['val']:.4f}")
-    torch.save(m.state_dict(), PATH)
-    
-    xb, yb = get_batch('train')
 
-    logits, loss = model(xb, yb)
-    optimizer.zero_grad(set_to_none=True)
-    loss.backward()
-    optimizer.step()
+if __name__ == "__main__":
+    for iter in range(max_iters):
+        if iter % eval_interval == 0:
+            losses = estimate_loss()
+            
+            
+            #print(f"step {iter}: train loss {losses['train']:.4f}, val loss {losses['val']:.4f}")
+        torch.save(m.state_dict(), PATH)
+        
+        xb, yb = get_batch('train')
+
+        logits, loss = model(xb, yb)
+        optimizer.zero_grad(set_to_none=True)
+        loss.backward()
+        optimizer.step()
+
+    context = torch.zeros((1, 1), dtype=torch.long, device=device)
+    print(decode(m.generate(context, max_new_tokens=40)[0].tolist()))
 # for steps in range(10000):
 #     # sampling
 #     xb, yb = get_batch("train")
@@ -249,8 +253,8 @@ for iter in range(max_iters):
 #     optimizer.step()
 
 
-context = torch.zeros((1, 1), dtype=torch.long, device=device)
-print(decode(m.generate(context, max_new_tokens=30)[0].tolist()))
+
+
 
 # Load
 

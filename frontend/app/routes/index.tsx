@@ -7,7 +7,9 @@ export default  function Index() {
   useEffect(() => {
     async function getData() {
       // const data = {"hi": "hey"}
-      const res = await fetch("https://wild-grass-7851.fly.dev/", {
+      const url = "https://wild-grass-7851.fly.dev/"
+      const local_url = "http://127.0.0.1:8000"
+      const res = await fetch(url, {
         method: 'POST', // *GET, POST, PUT, DELETE, etc.
         headers: {
           'Content-Type': 'application/json'
@@ -17,19 +19,20 @@ export default  function Index() {
       });
 
       const jsonValue = await res.json()
-      const resolved = await Promise.resolve(jsonValue)
+      // const resolved = await Promise.resolve(jsonValue)
       console.log(jsonValue)
-      console.log(resolved)
       setOutput(jsonValue.message)
-      // console.log("something")
+
     }
     getData()
   }, [])
   
   return (
     <div style={{ fontFamily: "system-ui, sans-serif", lineHeight: "1.4" }}>
-      <h1>Welcome to Remix</h1>
-      <h2>Output is: {output}</h2>
+      <h1>Character-level decoder only GPT</h1>
+      <h2>Trained on <a href="https://github.com/karpathy/char-rnn/blob/master/data/tinyshakespeare/input.txt">tiny sheakespeare</a> with a single CPU, so will probably not produce the new Hamlet.</h2>
+      <h2 style={{background: "#FFC0CB"}}>{output}</h2>
+      <h2>Sometimes it almost sounds like proper English!</h2>
     </div>
   );
 }
